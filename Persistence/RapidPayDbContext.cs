@@ -1,12 +1,12 @@
-﻿using Core.Cards;
+﻿using Core.AppUsers;
+using Core.Cards;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Persistence
 {
-    public class RapidPayDbContext : IdentityDbContext<IdentityUser>
+    public class RapidPayDbContext : IdentityDbContext<AppUser>
     {
         public RapidPayDbContext(DbContextOptions<RapidPayDbContext> options) : base(options)
         {

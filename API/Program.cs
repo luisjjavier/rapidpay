@@ -1,6 +1,7 @@
 
 using API.Initializer;
 using Core;
+using Core.AppUsers;
 using Core.Cards;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -44,7 +45,7 @@ namespace API
 
 
             app.MapControllers();
-            app.MapIdentityApi<IdentityUser>();
+            app.MapIdentityApi<AppUser>();
 
             await InitializeDb(app);
 
@@ -72,7 +73,7 @@ namespace API
                 });
             });
 
-            builder.Services.AddIdentityCore<IdentityUser>()
+            builder.Services.AddIdentityCore<AppUser>()
                 .AddEntityFrameworkStores<RapidPayDbContext>()
                 .AddApiEndpoints();
         }
