@@ -1,4 +1,5 @@
-﻿using Core.Helpers;
+﻿using Core.AppUsers;
+using Core.Helpers;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Cards
@@ -18,7 +19,7 @@ namespace Core.Cards
             throw new NotImplementedException();
         }
 
-        public async Task<Card> CreateCardAsync(Card card)
+        public async Task<Card> CreateCardAsync(Card card, AppUser appUser)
         {
             _logger.LogTrace("Creating a new card");
             if (string.IsNullOrEmpty(card.CardNumber))
@@ -31,7 +32,7 @@ namespace Core.Cards
 
             }
 
-            var entity = await _cardRepository.CreateAsync(card);
+            var entity = await _cardRepository.CreateAsync(card, appUser);
 
             return entity;
         }

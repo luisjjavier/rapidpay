@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.AppUsers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -18,12 +19,12 @@ namespace Persistence
             _logger = logger;
         }
 
-        public async Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
+        public async Task<TEntity> CreateAsync(TEntity entity,AppUser appUser, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             entity.Created = DateTime.Now;
-
+            entity.CreatedBy = appUser.UserName!;
             Db.Set<TEntity>().Add(entity);
             await Db.SaveChangesAsync(cancellationToken);
 

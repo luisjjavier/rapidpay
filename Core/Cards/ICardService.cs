@@ -1,8 +1,10 @@
-﻿namespace Core.Cards
+﻿using Core.AppUsers;
+
+namespace Core.Cards
 {
     public  interface ICardService
     {
         Task<Card> GetCard(Guid id);
-        Task<Card> CreateCardAsync(Card card);
+        Task<Card> CreateCardAsync(Card card, AppUser appUser);
     }
 }
