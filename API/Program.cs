@@ -1,4 +1,7 @@
 
+using Core;
+using Core.Cards;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -22,6 +25,9 @@ namespace API
                 });
             });
 
+            builder.Services.AddScoped<IRepository<Card>, RapidPayRepository<Card>>();
+            builder.Services.AddScoped<ICardService,CardService>();
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
