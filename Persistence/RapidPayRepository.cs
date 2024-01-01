@@ -12,7 +12,7 @@ namespace Persistence
         protected readonly DbContext Db;
         private readonly ILogger<RapidPayRepository<TEntity>> _logger;
 
-        public RapidPayRepository(DbContext db, ILogger<RapidPayRepository<TEntity>> logger)
+        public RapidPayRepository(RapidPayDbContext db, ILogger<RapidPayRepository<TEntity>> logger)
         {
             Db = db;
             _logger = logger;

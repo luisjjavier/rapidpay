@@ -1,7 +1,9 @@
 
+using API.Initializer;
 using Core;
 using Core.Cards;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -16,15 +18,10 @@ namespace API
             // Add services to the container.
 
             builder.Services.AddControllers();
-            builder.Services.AddDbContext<DbContext, RapidPayDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), optionsBuilder =>
-                {
-                    optionsBuilder.CommandTimeout(300);
-                    optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
-                });
-            });
+            BuildDbConfiguration(builder);
 
+            builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
+            builder.Services.AddAuthorizationBuilder();
             builder.Services.AddScoped<IRepository<Card>, RapidPayRepository<Card>>();
             builder.Services.AddScoped<ICardService,CardService>();
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
@@ -47,15 +44,37 @@ namespace API
 
 
             app.MapControllers();
+            app.MapIdentityApi<IdentityUser>();
 
-            using (var serviceScope = app.Services.CreateScope())
-            {
-                var dbContext = serviceScope.ServiceProvider.GetRequiredService<RapidPayDbContext>();
-               await dbContext.Database.MigrateAsync();
-               await dbContext.Database.EnsureCreatedAsync();
-            }
+            await InitializeDb(app);
 
             await app.RunAsync();
+        }
+
+        private static async Task InitializeDb(WebApplication app)
+        {
+            using var serviceScope = app.Services.CreateScope();
+            var dbContext = serviceScope.ServiceProvider.GetRequiredService<RapidPayDbContext>();
+            await dbContext.Database.MigrateAsync();
+            await dbContext.Database.EnsureCreatedAsync();
+
+            await SampleData.Initialize(dbContext);
+        }
+
+        private static void BuildDbConfiguration(WebApplicationBuilder builder)
+        {
+            builder.Services.AddDbContext<RapidPayDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), optionsBuilder =>
+                {
+                    optionsBuilder.CommandTimeout(300);
+                    optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                });
+            });
+
+            builder.Services.AddIdentityCore<IdentityUser>()
+                .AddEntityFrameworkStores<RapidPayDbContext>()
+                .AddApiEndpoints();
         }
     }
 }

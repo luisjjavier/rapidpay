@@ -16,6 +16,12 @@ namespace Persistence.EntityConfig
             builder.HasIndex(x => x.Id);
             builder.HasIndex(card => card.CardNumber).IsUnique();
             builder.Property(card => card.CardNumber).HasMaxLength(15);
+
+            builder
+                .Property(e => e.Status)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (CardStatus)Enum.Parse(typeof(CardStatus), v));
         }
     }
 }
