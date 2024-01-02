@@ -16,12 +16,15 @@ namespace Core.Cards
         }
         public async Task<Card> GetCard(Guid id)
         {
-            throw new NotImplementedException();
+            var card  = await _cardRepository.GetByIdAsync(id);
+
+            return card;
         }
 
         public async Task<Card> CreateCardAsync(Card card, AppUser appUser)
         {
             _logger.LogTrace("Creating a new card");
+
             if (string.IsNullOrEmpty(card.CardNumber))
             {
                 card.CardNumber = GenerateCardNumber();
@@ -35,6 +38,11 @@ namespace Core.Cards
             var entity = await _cardRepository.CreateAsync(card, appUser);
 
             return entity;
+        }
+
+        public async Task UpdateAsync(Card card, AppUser appUser)
+        {
+           await _cardRepository.UpdateAsync(card, appUser);
         }
 
         private string GenerateCardNumber()

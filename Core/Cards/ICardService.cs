@@ -6,5 +6,6 @@ namespace Core.Cards
     {
         Task<Card> GetCard(Guid id);
         Task<Card> CreateCardAsync(Card card, AppUser appUser);
+        Task UpdateAsync(Card card, AppUser appUser);
     }
 }

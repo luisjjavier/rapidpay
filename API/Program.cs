@@ -3,6 +3,7 @@ using API.Initializer;
 using Core;
 using Core.AppUsers;
 using Core.Cards;
+using Core.Transactions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,9 @@ namespace API
             builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
             builder.Services.AddAuthorizationBuilder();
             builder.Services.AddScoped<IRepository<Card>, RapidPayRepository<Card>>();
+            builder.Services.AddScoped<IRepository<Transaction>, RapidPayRepository<Transaction>>();
             builder.Services.AddScoped<ICardService,CardService>();
+            builder.Services.AddScoped<ITransactionService,TransactionService>();
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

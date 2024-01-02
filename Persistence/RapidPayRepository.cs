@@ -19,7 +19,7 @@ namespace Persistence
             _logger = logger;
         }
 
-        public async Task<TEntity> CreateAsync(TEntity entity,AppUser appUser, CancellationToken cancellationToken = default)
+        public async Task<TEntity> CreateAsync(TEntity entity, AppUser appUser, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -30,5 +30,50 @@ namespace Persistence
 
             return entity;
         }
+
+        public async Task UpdateAsync(TEntity entity, AppUser appUser, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var retryCount = 0;
+            bool success = false;
+            do
+            {
+                try
+                {
+                    entity.Updated = DateTime.Now;
+                    entity.UpdatedBy = appUser.UserName!;
+                    entity.ConcurrencyStamp = Guid.NewGuid().ToString();
+
+                    Db.Entry(entity).State = EntityState.Modified;
+
+
+                    await Db.SaveChangesAsync(cancellationToken);
+                    success = true;
+                }
+                catch (Exception ex)
+                {
+                    if (ex is DbUpdateConcurrencyException)
+                    {
+                        _logger.LogWarning(ex, $"Concurrency error occurred when trying to update {nameof(entity)} record {entity.Id}");
+                        break;
+                    }
+                    else
+                    {
+                        _logger.LogError(ex, $"Error occurred when trying to update {nameof(entity)} record {entity.Id}");
+                    }
+
+                    retryCount++;
+                }
+
+            } while (!success && retryCount < 3);
+
+        }
+
+        public async Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await Db.Set<TEntity>().FindAsync(new object[] { id }, cancellationToken);
+        }
+
     }
 }
