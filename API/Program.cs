@@ -41,12 +41,10 @@ namespace API
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
 
             app.UseHttpsRedirection();
 
@@ -65,7 +63,7 @@ namespace API
         {
             builder.Services.AddScoped<ICardService, CardService>();
             builder.Services.AddScoped<ITransactionService, TransactionService>();
-            builder.Services.AddSingleton<IPaymentFeeService,PaymentService>();
+            builder.Services.AddSingleton<IPaymentFeeService, PaymentService>();
         }
 
         private static void BuildRepositories(WebApplicationBuilder builder)
