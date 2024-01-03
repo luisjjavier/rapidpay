@@ -63,13 +63,22 @@ Follow the steps below to set up and run the project locally.
 
 2. The application will be accessible at `http://localhost:5000` by default.
 
-
+### another way to test the app is using docker
+1. Run the following command 
+```bash
+docker-compose up
+```
 ## API Endpoints
 
 - **Endpoint 1**: Description of the first endpoint.
-  - Route: `/api/endpoint1`
-  - Method: GET
-  - Parameters: List of parameters if any
+  - Route: `/login`
+  - Method: POST
+  - Parameters: ```json
+  {
+  "email": "TestAccount@example.com",
+  "password": "string12@A"
+}
+  ```
   - Example Usage: Provide an example
 
 - **Endpoint 2**: Description of the second endpoint.
