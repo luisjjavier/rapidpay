@@ -1,5 +1,9 @@
 # Rapid pay
-Short description of your .NET Core API project.
+Meet our company – RapidPay.
+RapidPay as a payment provider needs YOU to develop its new Authorization system and is
+willing to pay accordingly!
+The whole project is divided into two parts: Card Management module and Payment Fees
+module.
 
 ## Table of Contents
 
@@ -71,6 +75,10 @@ Follow the steps below to set up and run the project locally.
 ```bash
 docker-compose up
 ```
+### Unit testing (Core.Facts)
+    ```bash
+    dotnet test
+    ```
 ## API Endpoints
 
 - **Login**: Use this endpoint for login
