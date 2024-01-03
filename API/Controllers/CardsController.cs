@@ -47,7 +47,7 @@ namespace API.Controllers
 
         private async Task<AppUser?> GetAppUserAsync()
         {
-            string email = User.GetEmail();
+            string? email = User.GetEmail();
             var user = await _userManager.FindByEmailAsync(email);
             return user;
         }
@@ -77,7 +77,6 @@ namespace API.Controllers
             {
                  Semaphore.Release();
             }
-           
         }
 
         [HttpGet("{id}/balance")]
