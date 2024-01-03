@@ -42,8 +42,8 @@ Follow the steps below to set up and run the project locally.
 1. Clone the repository to your local machine:
 
     ```bash
-    git clone https://github.com/your-username/your-repository.git
-    cd your-repository
+    git clone https://github.com/luisjjavier/rapidpay.git
+    cd rapidpay
     ```
 
 2. Build the project:
@@ -63,35 +63,49 @@ Follow the steps below to set up and run the project locally.
 
 2. The application will be accessible at `http://localhost:5000` by default.
 
-### another way to test the app is using docker
+### another way to test the app is using docker under solution folder
 1. Run the following command 
 ```bash
 docker-compose up
 ```
 ## API Endpoints
 
-- **Endpoint 1**: Description of the first endpoint.
+- **Login**: Use this endpoint for login
   - Route: `/login`
   - Method: POST
-  - Parameters: ```json
+  - Body:
+  ```
   {
   "email": "TestAccount@example.com",
   "password": "string12@A"
-}
-  ```
-  - Example Usage: Provide an example
+  } 
 
-- **Endpoint 2**: Description of the second endpoint.
-  - Route: `/api/endpoint2`
+- **Create a new card**: This will create a new card
+  - Route: `/api/cards/create-card`
   - Method: POST
-  - Parameters: List of parameters if any
-  - Example Usage: Provide an example
+  - Body: 
+  ```
+    {
+    "balance": 5000
+    }
+    ```
 
-- **Endpoint 3**: Description of the third endpoint.
-  - Route: `/api/endpoint3`
-  - Method: PUT
-  - Parameters: List of parameters if any
-  - Example Usage: Provide an example
+- **Do a payment**: Description of the third endpoint.
+  - Route: `/api/cards/{cardId}/pay`
+  - Method: POST
+  - Parameters: cardId
+  - Body:
+  ```
+    {
+     "cardId": "71192eb7-9538-46a2-b7b8-08dc0b9c9c68",
+     "amount": 12
+    }
+    ```
+
+- **Check balance**:
+  - Route: `/api/cards/{cardId}/balance`
+  - Method: GET
+  - Parameters: cardId
 
 ## Technologies Used
 
@@ -102,7 +116,3 @@ docker-compose up
 ## Contributing
 
 If you would like to contribute, please fork the repository and submit a pull request.
-
-## License
-
-This project is licensed under the [License Name] License - see the [LICENSE.md](LICENSE.md) file for details. (Replace [License Name] with the actual license you choose for your project.)
