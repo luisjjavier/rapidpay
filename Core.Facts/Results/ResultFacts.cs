@@ -1,9 +1,7 @@
-﻿namespace Core.Facts.Results
-{
-    using Core.Results;
-    using NUnit.Framework;
-    using System.Collections.Generic;
+﻿using Core.Results;
 
+namespace Core.Facts.Results
+{
     [TestFixture]
     public class ResultFacts
     {

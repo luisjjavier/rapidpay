@@ -1,15 +1,12 @@
-﻿namespace Core.Facts.Transactions
-{
-    using Core.AppUsers;
-    using Core.Cards;
-    using Core.PaymentFees;
-    using Core.Transactions;
-    using Microsoft.Extensions.Logging;
-    using Moq;
-    using NUnit.Framework;
-    using System;
-    using System.Threading.Tasks;
+﻿using Core.AppUsers;
+using Core.Cards;
+using Core.PaymentFees;
+using Core.Transactions;
+using Microsoft.Extensions.Logging;
+using Moq;
 
+namespace Core.Facts.Transactions
+{
     [TestFixture]
     public class TransactionServiceFacts
     {
@@ -19,7 +16,7 @@
             // Arrange
             var cardServiceMock = new Mock<ICardService>();
             cardServiceMock.Setup(service => service.GetCardAsync(It.IsAny<Guid>()))
-                .ReturnsAsync((Card)null);
+                .ReturnsAsync((Card)null!);
 
             var transactionRepositoryMock = new Mock<IRepository<Transaction>>();
             var loggerMock = new Mock<ILogger<TransactionService>>();
@@ -39,7 +36,7 @@
 
             // Assert
             Assert.IsFalse(result.Success);
-            Assert.AreEqual("Card does not exist", result.Errors?.GetEnumerator().Current);
+            Assert.AreEqual("Card does not exist", string.Join(',',result.Errors));
         }
 
         [Test]
@@ -71,7 +68,7 @@
 
             // Assert
             Assert.IsFalse(result.Success);
-            Assert.AreEqual("Failed to make the payment", result.Errors?.GetEnumerator().Current);
+            Assert.AreEqual("Failed to make the payment", string.Join(',', result.Errors));
         }
 
         [Test]

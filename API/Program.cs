@@ -5,15 +5,22 @@ using Core.AppUsers;
 using Core.Cards;
 using Core.PaymentFees;
 using Core.Transactions;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace API
 {
+    /// <summary>
+    /// Entry point class for the RapidPay web application.
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Main method to start the application.
+        /// </summary>
+        /// <param name="args">Command-line arguments.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
