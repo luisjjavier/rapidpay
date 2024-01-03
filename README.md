@@ -23,6 +23,9 @@ This is a .NET Core API project that provides a set of functionalities using .NE
 
 - .NET Core 8 API
 - Three endpoints for specific functionalities
+  - /api/cards/create-card
+  - /api/cards/{cardId}/pay
+  - /api/cards/{cardId}/balance
 - SQL Server in Docker for data storage
 
 ## Prerequisites
@@ -79,7 +82,7 @@ docker-compose up
   "email": "TestAccount@example.com",
   "password": "string12@A"
   } 
-
+##### *Please note that the login process will provide a token, which you will then use to authorize subsequent requests.
 - **Create a new card**: This will create a new card
   - Route: `/api/cards/create-card`
   - Method: POST
