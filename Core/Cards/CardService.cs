@@ -14,7 +14,7 @@ namespace Core.Cards
             _cardRepository = cardRepository;
             _logger = logger;
         }
-        public async Task<Card> GetCard(Guid id)
+        public async Task<Card> GetCardAsync(Guid id)
         {
             var card  = await _cardRepository.GetByIdAsync(id);
 
@@ -40,10 +40,7 @@ namespace Core.Cards
             return entity;
         }
 
-        public async Task UpdateAsync(Card card, AppUser appUser)
-        {
-           await _cardRepository.UpdateAsync(card, appUser);
-        }
+        public async Task UpdateAsync(Card card, AppUser appUser) => await _cardRepository.UpdateAsync(card, appUser);
 
         private string GenerateCardNumber()
         {

@@ -3,6 +3,7 @@ using API.Initializer;
 using Core;
 using Core.AppUsers;
 using Core.Cards;
+using Core.PaymentFees;
 using Core.Transactions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -24,10 +25,8 @@ namespace API
 
             builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
             builder.Services.AddAuthorizationBuilder();
-            builder.Services.AddScoped<IRepository<Card>, RapidPayRepository<Card>>();
-            builder.Services.AddScoped<IRepository<Transaction>, RapidPayRepository<Transaction>>();
-            builder.Services.AddScoped<ICardService,CardService>();
-            builder.Services.AddScoped<ITransactionService,TransactionService>();
+            BuildRepositories(builder);
+            BuildServices(builder);
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -53,6 +52,20 @@ namespace API
             await InitializeDb(app);
 
             await app.RunAsync();
+        }
+
+        private static void BuildServices(WebApplicationBuilder builder)
+        {
+            builder.Services.AddScoped<ICardService, CardService>();
+            builder.Services.AddScoped<ITransactionService, TransactionService>();
+            builder.Services.AddSingleton<IPaymentFeeService,PaymentService>();
+        }
+
+        private static void BuildRepositories(WebApplicationBuilder builder)
+        {
+            builder.Services.AddScoped<IRepository<Card>, RapidPayRepository<Card>>();
+            builder.Services.AddScoped<IRepository<Transaction>, RapidPayRepository<Transaction>>();
+
         }
 
         private static async Task InitializeDb(WebApplication app)

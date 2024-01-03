@@ -72,7 +72,7 @@ namespace Persistence
 
         public async Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await Db.Set<TEntity>().FindAsync(new object[] { id }, cancellationToken);
+            return await Db.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
         }
 
     }

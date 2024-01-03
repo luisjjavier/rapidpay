@@ -68,7 +68,7 @@ namespace API.Controllers
 
                 if (transactionResult.TransactionStatus == PaymentTransactionStatus.Aborted)
                 {
-                    return Conflict(new { message = "Insuficient balance for make the payment" });
+                    return Conflict(new { message = "Insufficiency balance for make the payment" });
                 }
 
                 return Ok(new { message = "Payment processed successfully." });
@@ -81,7 +81,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}/balance")]
-        public IActionResult GetBalance([FromRoute] string cardNumber)
+        public IActionResult GetBalance([FromRoute] Guid id)
         {
             return Ok();
         }
