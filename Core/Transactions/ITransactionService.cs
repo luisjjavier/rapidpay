@@ -1,9 +1,10 @@
 ﻿using Core.AppUsers;
+using Core.Results;
 
 namespace Core.Transactions
 {
     public interface ITransactionService
     {
-        Task<Transaction> MakePaymentAsync(Transaction transaction, AppUser appUser);
+        Task<Result<Transaction>> MakePaymentAsync(Transaction transaction, AppUser appUser);
     }
 }

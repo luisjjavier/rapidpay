@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
-{
+{/// <summary>
+ /// API controller for managing payment cards.
+ /// </summary>
     [Route("api/cards")]
     [ApiController]
     [Authorize]
@@ -19,9 +21,19 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
         private readonly ITransactionService _transactionService;
-        private static readonly SemaphoreSlim Semaphore = new(1);
-        public CardsController(ICardService cardService, 
-            IMapper mapper, UserManager<AppUser> userManager, ITransactionService transactionService)
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CardsController"/> class.
+        /// </summary>
+        /// <param name="cardService">Service for managing payment cards.</param>
+        /// <param name="mapper">Mapper for mapping DTOs to domain models.</param>
+        /// <param name="userManager">User manager for managing application users.</param>
+        /// <param name="transactionService">Service for managing payment transactions.</param>
+        public CardsController(
+            ICardService cardService,
+            IMapper mapper,
+            UserManager<AppUser> userManager,
+            ITransactionService transactionService)
         {
             _cardService = cardService;
             _mapper = mapper;
@@ -29,6 +41,14 @@ namespace API.Controllers
             _transactionService = transactionService;
         }
 
+        /// <summary>
+        /// Creates a new payment card.
+        /// </summary>
+        /// <param name="cardDto">DTO containing card information.</param>
+        /// <returns>
+        /// 200 OK with a success message and card details if successful.
+        /// 400 Bad Request with an error message if unsuccessful.
+        /// </returns>
         [HttpPost("create-card")]
         public async Task<IActionResult> CreateCard([FromBody] CardDto cardDto)
         {
@@ -39,10 +59,69 @@ namespace API.Controllers
                 return Unauthorized();
             }
 
-            await _cardService.CreateCardAsync(newCard, user);
+            var result = await _cardService.CreateCardAsync(newCard, user);
+            if (result.Success)
+            {
+                return Ok(new
+                {
+                    message = "Card created successfully",
+                    cardNumber = newCard.CardNumber,
+                    cardId = newCard.Id
+                });
+            }
+            return BadRequest(new
+            {
+                message = string.Join(',', result.Errors)
+            });
+        }
 
-            return Ok(new { message = "Card created successfully", cardNumer = newCard.CardNumber,
-                cardId = newCard.Id });
+        /// <summary>
+        /// Processes a payment using the specified card.
+        /// </summary>
+        /// <param name="paymentDto">DTO containing payment information.</param>
+        /// <returns>
+        /// 200 OK with a success message if the payment is processed successfully.
+        /// 400 Bad Request with an error message if unsuccessful.
+        /// 401 Unauthorized if the user is not authenticated.
+        /// </returns>
+        [HttpPost("{id}/pay")]
+        public async Task<IActionResult> Pay([FromBody] PaymentDto paymentDto)
+        {
+            var user = await GetAppUserAsync();
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var transaction = _mapper.Map<Transaction>(paymentDto);
+            var transactionResult = await _transactionService.MakePaymentAsync(transaction, user);
+
+            if (!transactionResult.Success)
+            {
+                return BadRequest(new { message = string.Join(",", transactionResult.Errors) });
+            }
+
+            return Ok(new { message = "Payment processed successfully." });
+        }
+
+        /// <summary>
+        /// Retrieves the balance of a payment card.
+        /// </summary>
+        /// <param name="id">The ID of the payment card.</param>
+        /// <returns>
+        /// 200 OK with the card balance if the card exists.
+        /// 404 Not Found if the card does not exist.
+        /// </returns>
+        [HttpGet("{id}/balance")]
+        public async Task<IActionResult> GetBalance([FromRoute] Guid id)
+        {
+            var card = await _cardService.GetCardAsync(id);
+            if (card is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<CardDto>(card));
         }
 
         private async Task<AppUser?> GetAppUserAsync()
@@ -52,37 +131,5 @@ namespace API.Controllers
             return user;
         }
 
-        [HttpPost("{id}/pay")]
-        public async Task<IActionResult> Pay([FromBody] PaymentDto paymentDto)
-        {
-            try
-            {
-                await Semaphore.WaitAsync();
-                var user = await GetAppUserAsync();
-                if (user == null)
-                {
-                    return Unauthorized();
-                }
-                var transaction = _mapper.Map<Transaction>(paymentDto);
-                var transactionResult =  await _transactionService.MakePaymentAsync(transaction, user);
-
-                if (transactionResult.TransactionStatus == PaymentTransactionStatus.Aborted)
-                {
-                    return Conflict(new { message = "Insufficiency balance for make the payment" });
-                }
-
-                return Ok(new { message = "Payment processed successfully." });
-            }
-            finally
-            {
-                 Semaphore.Release();
-            }
-        }
-
-        [HttpGet("{id}/balance")]
-        public IActionResult GetBalance([FromRoute] Guid id)
-        {
-            return Ok();
-        }
     }
 }
