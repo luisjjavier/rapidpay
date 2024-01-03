@@ -3,6 +3,7 @@ using Core.Cards;
 using Core.PaymentFees;
 using Core.Results;
 using Microsoft.Extensions.Logging;
+using System.Transactions;
 
 namespace Core.Transactions
 {
@@ -44,28 +45,33 @@ namespace Core.Transactions
         /// <returns>A result indicating the success or failure of the transaction.</returns>
         public async Task<Result<Transaction>> MakePaymentAsync(Transaction transaction, AppUser appUser)
         {
-            try
+            using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                await Semaphore.WaitAsync();
+                try
+                {
 
-                var card = await _cardService.GetCardAsync(transaction.CardId);
+                    await Semaphore.WaitAsync();
 
-                if (card is null)
-                    return Result<Transaction>.FailedResult(transaction, "Card does not exist");
+                    var card = await _cardService.GetCardAsync(transaction.CardId);
 
-                var paymentResult = await ValidateAndProcessPayment(card, transaction, appUser);
+                    if (card is null)
+                        return Result<Transaction>.FailedResult(transaction, "Card does not exist");
 
-                return paymentResult;
-            }
-            catch (Exception e)
-            {
-                string message = "Failed to make the payment";
-                _logger.LogError(e, message);
-                return Result<Transaction>.FailedResult(transaction, message);
-            }
-            finally
-            {
-                Semaphore.Release();
+                    var paymentResult = await ValidateAndProcessPayment(card, transaction, appUser);
+                    scope.Complete();
+                    return paymentResult;
+                }
+                catch (Exception e)
+                {
+                    string message = "Failed to make the payment";
+                    _logger.LogError(e, message);
+                    scope.Dispose();
+                    return Result<Transaction>.FailedResult(transaction, message);
+                }
+                finally
+                {
+                    Semaphore.Release();
+                }
             }
         }
 
