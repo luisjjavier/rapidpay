@@ -103,12 +103,11 @@ docker-compose up
 
 - **Do a payment**: Description of the third endpoint.
   - Route: `/api/cards/{cardId}/pay`
-  - Method: POST
+  - Method: PUT
   - Parameters: cardId
   - Body:
   ```
     {
-     "cardId": "71192eb7-9538-46a2-b7b8-08dc0b9c9c68",
      "amount": 12
     }
     ```

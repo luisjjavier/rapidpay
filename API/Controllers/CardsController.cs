@@ -79,14 +79,16 @@ namespace API.Controllers
         /// Processes a payment using the specified card.
         /// </summary>
         /// <param name="paymentDto">DTO containing payment information.</param>
+        /// <param name="id">Card identification key</param>
         /// <returns>
         /// 200 OK with a success message if the payment is processed successfully.
         /// 400 Bad Request with an error message if unsuccessful.
         /// 401 Unauthorized if the user is not authenticated.
         /// </returns>
-        [HttpPost("{id}/pay")]
-        public async Task<IActionResult> Pay([FromBody] PaymentDto paymentDto)
+        [HttpPut("{id}/pay")]
+        public async Task<IActionResult> Pay([FromRoute]Guid id, [FromBody] PaymentDto paymentDto)
         {
+            paymentDto.CardId = id;
             var user = await GetAppUserAsync();
             if (user == null)
             {
