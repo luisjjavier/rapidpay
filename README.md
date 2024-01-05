@@ -16,8 +16,8 @@ module.
   - [Running the Application](#running-the-application)
 - [API Endpoints](#api-endpoints)
 - [Technologies Used](#technologies-used)
+- [Architecture used](#architecture-used)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Introduction
 
@@ -123,6 +123,39 @@ docker-compose up
 - .NET Core 8
 - SQL Server
 - Docker
+
+## Architecture Used
+Hexagonal Architecture, also known as Ports and Adapters or the Onion Architecture, is a
+software architectural pattern that focuses on separating concerns and promoting a clean and modular design. The core concept is to structure the application around its business
+logic while keeping external dependencies, such as databases, frameworks, and UI, at the edges.
+## Key Principles
+
+1. **Separation of Concerns:** Hexagonal Architecture emphasizes the separation of business logic from external concerns. The core business logic resides at the center, and various adapters connect to the outside world.
+
+2. **Dependency Inversion:** The architecture encourages the use of dependency inversion, where high-level modules (business logic) are not dependent on low-level modules (external services). Instead, both depend on abstractions.
+
+3. **Testability:** By isolating the business logic from external dependencies, it becomes easier to test the application. Unit testing, integration testing, and system testing can be performed more efficiently.
+
+4. **Adaptability:** The hexagonal structure allows the system to be more adaptable to changes. When external components change, only the corresponding adapters need modification, leaving the core business logic unaffected.
+
+
+## Benefits
+
+### 1. **Flexibility and Maintainability:**
+   - **Scenario:** When there is a need to change the database or switch to a different UI framework.
+   - **Benefit:** Hexagonal Architecture enables making changes without affecting the core business logic, resulting in a more flexible and maintainable system.
+
+### 2. **Testability and Isolation:**
+   - **Scenario:** Conducting unit tests or mocking external dependencies.
+   - **Benefit:** Business logic is decoupled from external concerns, facilitating easier testing and isolation of components.
+
+### 3. **Reduced Coupling:**
+   - **Scenario:** Minimizing dependencies between different parts of the system.
+   - **Benefit:** Hexagonal Architecture reduces coupling by enforcing a clear separation between the inner core and external components, making the system more modular.
+
+### 4. **Portability:**
+   - **Scenario:** Transitioning the application to different environments or platforms.
+   - **Benefit:** The hexagonal structure allows the application to be more portable as long as the adapters for external interactions are adjusted.
 
 ## Contributing
 

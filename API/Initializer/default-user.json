@@ -1,0 +1,13 @@
+{
+  "FirstName": "Test",
+  "LastName": "Account",
+  "Email": "TestAccount@example.com",
+  "NormalizedEmail": "TESTACCOUNT@EXAMPLE.COM",
+  "UserName": "TestAccount@example.com",
+  "NormalizedUserName": "TESTACCOUNT@EXAMPLE.COM",
+  "PhoneNumber": "+111111111111",
+  "EmailConfirmed": true,
+  "PhoneNumberConfirmed": true,
+  "LockoutEnabled": true,
+  "Password": "string12@A"
+}

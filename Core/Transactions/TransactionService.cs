@@ -84,7 +84,7 @@ namespace Core.Transactions
         /// <returns>A result indicating the success or failure of the transaction.</returns>
         private async Task<Result<Transaction>> ValidateAndProcessPayment(Card card, Transaction transaction, AppUser appUser)
         {
-            var fee = _feeService.CalculatePaymentFee();
+            var fee = _feeService.GetPaymentFee();
             var newBalance = card.Balance - transaction.Amount - fee;
 
             if (newBalance < 0)

@@ -1,33 +1,66 @@
 ﻿namespace Core.Facts.PaymentService
 {
+    using Microsoft.Extensions.Configuration;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class PaymentFeeServiceFacts
     {
         [Test]
-        public void CalculatePaymentFee_ShouldReturnNonZeroFee()
+        public void GetPaymentFee_ShouldReturn_LastFeeAmount()
         {
             // Arrange
-            var paymentService = new PaymentFees.PaymentService();
+            var configurationMock = BuildConfigurationBinder();
+
+            var paymentService = new PaymentFees.PaymentService(configurationMock);
 
             // Act
-            decimal paymentFee = paymentService.CalculatePaymentFee();
+            var result = paymentService.GetPaymentFee();
 
             // Assert
-            Assert.That(paymentFee, Is.GreaterThan(0));
+            Assert.AreEqual(1, result);
         }
 
         [Test]
-        public void CalculatePaymentFee_ShouldChangeFeeBetweenCalls()
+        public void CalculatePaymentFee_ShouldReturn_NewFee()
         {
             // Arrange
-            var paymentService = new PaymentFees.PaymentService();
+            var configurationMock = BuildConfigurationBinder();
+
+            var paymentService = new PaymentFees.PaymentService(configurationMock);
 
             // Act
-            decimal initialFee = paymentService.CalculatePaymentFee();
-            decimal newFee = paymentService.CalculatePaymentFee();
+            var result = paymentService.CalculatePaymentFee();
 
             // Assert
-            Assert.That(newFee, Is.Not.EqualTo(initialFee));
+            Assert.GreaterOrEqual(result, 0);
+        }
+
+        [Test]
+        public void CalculatePaymentFee_ShouldUpdate_LastFeeAmount()
+        {
+            // Arrange
+            var configurationMock = BuildConfigurationBinder();
+
+            var paymentService = new PaymentFees.PaymentService(configurationMock);
+
+            // Act
+            var initialLastFeeAmount = paymentService.GetPaymentFee();
+            var result = paymentService.CalculatePaymentFee();
+            var updatedLastFeeAmount = paymentService.GetPaymentFee();
+
+            // Assert
+            Assert.AreNotEqual(initialLastFeeAmount, updatedLastFeeAmount);
+        }
+
+        private IConfigurationRoot BuildConfigurationBinder()
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection()
+                .Build();
+            configuration["InitialFeeAmount"] = "1";
+            return configuration;
         }
     }
 }

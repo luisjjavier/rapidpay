@@ -1,4 +1,6 @@
+using API.BackgroundProcesses;
 using API.Initializer;
+using AutoMapper;
 using Core;
 using Core.AppUsers;
 using Core.Cards;
@@ -34,6 +36,7 @@ namespace API
             builder.Services.AddAuthorizationBuilder();
             BuildRepositories(builder);
             BuildServices(builder);
+            builder.Services.AddHostedService<UniversalFeeExchange>();
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -107,7 +110,12 @@ namespace API
             await dbContext.Database.MigrateAsync();
             await dbContext.Database.EnsureCreatedAsync();
 
-            await SampleData.Initialize(dbContext);
+            if (app.Configuration.GetValue<bool>("ApplyDefaultUser"))
+            {
+                var mapper  = serviceScope.ServiceProvider.GetRequiredService<IMapper>();
+                await SampleData.Initialize(dbContext, mapper);
+            }
+           
         }
 
         private static void BuildDbConfiguration(WebApplicationBuilder builder)

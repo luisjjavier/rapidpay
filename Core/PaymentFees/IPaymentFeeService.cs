@@ -5,6 +5,9 @@
     /// </summary>
     public interface IPaymentFeeService
     {
+
+        decimal GetPaymentFee();
+
         /// <summary>
         /// Calculates the payment fee for a transaction.
         /// </summary>
