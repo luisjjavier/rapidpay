@@ -91,7 +91,7 @@ docker-compose up
   "password": "string12@A"
   } 
 ##### *Please note that the login process will provide a token, which you will then use to authorize subsequent requests.
-- **Create a new card**: This will create a new card
+- **Create a new card**: This will create a new card, In my understanding, the system generates a card with a unique 15-digit identifier. Notably, this identifier is not obtained from the incoming request but is dynamically created by the system. This approach ensures the uniqueness and security of each card generated within the system. By autonomously generating the card number, the system reduces the risk of potential security vulnerabilities associated with externally provided card numbers. This practice aligns with best security practices in financial and card-based systems, where the system itself generates and manages sensitive identification information to enhance security and prevent potential misuse.
   - Route: `/api/cards/create-card`
   - Method: POST
   - Body: 
