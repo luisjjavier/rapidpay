@@ -34,7 +34,7 @@ namespace API.Initializer
         private static async Task TryToCreateDefaultUser(RapidPayDbContext dbContext, IMapper mapper)
         {
             // Read raw JSON data from the default-user.json file.
-            var rawJson = await File.ReadAllTextAsync("./initializer/default-user.json");
+            var rawJson = await File.ReadAllTextAsync("./Initializer/default-user.json");
 
             // Deserialize the JSON data into a UserDto object.
             var userDto = JsonSerializer.Deserialize<UserDto>(rawJson);
