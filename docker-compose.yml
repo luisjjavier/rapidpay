@@ -4,10 +4,13 @@ services:
     container_name: web_api_application
     build:
       context: .
-      dockerfile: ./api/Dockerfile
-    ports:
-      - "5000:8080"
-      - "5005:8081"
+      dockerfile: api/Dockerfile
+    depends_on:
+        sql:
+            condition: service_started
+            restart: true
+    restart: always
+
   sql:
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     container_name: sql_server2022
@@ -16,3 +19,4 @@ services:
     environment:
       - ACCEPT_EULA=y
       - SA_PASSWORD=A&VeryComplex123Password
+      - MSSQL_PID=Developer
