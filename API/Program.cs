@@ -32,7 +32,11 @@ namespace API
             builder.Services.AddControllers();
             BuildDbConfiguration(builder);
 
-            builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
+            builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme).AddCookie(
+                "Identity.Application",
+                option =>
+                {
+                });
             builder.Services.AddAuthorizationBuilder();
             BuildRepositories(builder);
             BuildServices(builder);
